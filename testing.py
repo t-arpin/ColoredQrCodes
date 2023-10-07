@@ -1,7 +1,18 @@
-import base64
 
-def alpha_to_num(alpha):
-  num_bytes = base64.b64decode(alpha)
-  return int(num_bytes.encode('hex'), 16)
+def alpha_to_num(data):
+  charstr ="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"
+  out = ""
+  chars = list(charstr)
+  nums = [str(i) for i in range(0,44)]
+  alphanumTable = dict(zip(chars,nums))
+  for i in data:
+    if i in charstr:
+      out += alphanumTable[i]
+    else:
+      return "error"
+  return(int(out))
+  
 
-s = "a")
+print(alpha_to_num("Te"))
+
+

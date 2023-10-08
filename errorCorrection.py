@@ -8,3 +8,4 @@ print(decoded_msg)  # decoded/corrected message
 print(decoded_msgecc)  # decoded/corrected message and ecc symbols
 print(errata_pos)  # errata_pos is returned as a bytearray, hardly intelligible
 print(list(errata_pos))
+

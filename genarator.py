@@ -1,7 +1,7 @@
 import math
 import base64
 
-input = "AHDIW$%*-$GDSJ"
+input = "TEST"
 
 def createZero(lenght, len):
     out = ""

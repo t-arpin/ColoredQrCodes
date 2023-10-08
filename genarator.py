@@ -109,11 +109,10 @@ def getSegment(input):
 
     #add error correction
 
-    sequence.append("00000000000000000000000000000000000000000000000000000000")
+    sequence.append("00001100010011010111101101110111100100001000000010011011")
 
     print(sequence)
 
     return sequence[0] + sequence[1] + sequence[2] + sequence[3] + sequence[4] + sequence[5] + sequence[6]
 
 print(getSegment(input))
-

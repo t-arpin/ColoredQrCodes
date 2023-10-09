@@ -35,11 +35,12 @@ class Ui_MainWindow(object):
  
          
  
-while 0 == 0:
-    app = QtWidgets.QApplication([])
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+ 
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
+ 
     ui.setupUi(MainWindow)
     MainWindow.show()
-    MainWindow.update()
-    sys.exit(app.exec())
+    sys.exit(app.exec_())

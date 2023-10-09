@@ -1,7 +1,9 @@
 import math
 import base64
 
-input = "AHDIW$%*-$GDSJ"
+input = "TEST"
+
+error_Correction = "10100011011111111000001110110011011011011101100000000111"
 
 def createZero(lenght, len):
     out = ""
@@ -102,7 +104,7 @@ def getSegment(input):
 
     #add error correction
 
-    sequence.append("00001100010011010111101101110111100100001000000010011011")
+    sequence.append(error_Correction)
 
 
     return sequence[0] + sequence[1] + sequence[2] + sequence[3] + sequence[4] + sequence[5] + sequence[6]

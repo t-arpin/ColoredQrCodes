@@ -129,7 +129,7 @@ def printMatix(matrix):
     for i in range(21):
         for x in matrix[i]:
             if x == 1:
-                out += "◼ "
+                out += "██"
             else:
                 out += "  "
         out += "\n"

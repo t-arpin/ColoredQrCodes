@@ -1,4 +1,3 @@
-
 def alpha_to_num(data):
   charstr ="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"
   out = ""
@@ -14,6 +13,7 @@ def alpha_to_num(data):
   
 
 print(alpha_to_num("Te"))
+
 
 
 

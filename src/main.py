@@ -1,9 +1,11 @@
 import math
-import base64
+import cv2
+import numpy as np
 
-input = "TEST"
-
-error_Correction = "10100011011111111000001110110011011011011101100000000111"
+windowsSize = [21, 21]
+scaling = 20
+input = "ABCEABF"
+error_Correction = "10011010010110111001010000010101100100001110100000101010"
 
 def createZero(lenght, len):
     out = ""
@@ -14,6 +16,8 @@ def createZero(lenght, len):
         max = 7
     elif len == 8:
         max = 2*lenght
+    elif len == 21:
+        max = 8
     else:
         max = len
     for i in range(max - lenght):
@@ -50,6 +54,7 @@ def getSegment(input):
     paddingSize = 152
 
     if mode == "0001":
+        print("num")
         terminator = "0000"
         temp = ""
         data = ""
@@ -66,6 +71,7 @@ def getSegment(input):
                 x = 0
         sequence = [mode, createZero(len(bin(len(input))[2:]),0) + bin(len(input))[2:], data, terminator]
     elif mode == "0010":
+        print("alphanum")
         terminator = "0000"
         temp = []
         data = ""
@@ -82,13 +88,21 @@ def getSegment(input):
                 temp[:] = []
                 x = 0  
         sequence = [mode, createZero(len(bin(len(input))[2:]), 9) + bin(len(input))[2:], data, terminator]
+    elif mode == "0100":
+        print("byte")
+        terminator = "0000"
+        data = ""
+        for i in input:
+            data += createZero(len(bin(ord(i))[2:]), 21) + bin(ord(i))[2:]
+        sequence = [mode, createZero(len(bin(len(input))[2:]), 21) + bin(len(input))[2:], data, terminator]
     else:
         return "no valid mode"
 
     sum = 0
     for i in sequence:
         sum += len(i)
-    sequence.append(createZero((round_to_multiple(sum, 8) - sum), 8))
+    
+    sequence.append(createZero(round_to_multiple(sum, 8) - sum, 8))
 
     sum = paddingSize - round_to_multiple(sum, 8)
     out = ""
@@ -106,14 +120,13 @@ def getSegment(input):
 
     sequence.append(error_Correction)
 
+    print(sequence)
 
     return sequence[0] + sequence[1] + sequence[2] + sequence[3] + sequence[4] + sequence[5] + sequence[6]
 
 print(getSegment(input))
 
-
 #qrcode printer
-
 w, h = 21, 21
 
 Matrix = [[0 for x in range(w)] for y in range(h)] 
@@ -124,17 +137,17 @@ data = getSegment(input)
 
 Mask = [[0 for x in range(w)] for y in range(h)] 
 
-def printMatix(matrix):
-    out = ""
-    for i in range(21):
-        for x in matrix[i]:
-            if x == 1:
-                out += "██"
+def printMatrix():
+    img = np.zeros((windowsSize[0]*scaling, windowsSize[1]*scaling, 3), np.uint8)
+
+    for y in range(21):
+        for x, i in enumerate(Matrix[y]):
+            if i == 1:
+                img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (0, 0, 0)
             else:
-                out += "  "
-        out += "\n"
-    out += ""
-    return out
+                img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (255, 255, 255)
+    return img
+    
 
 def drawTimeing():
     Matrix[0][6] = 1
@@ -320,8 +333,5 @@ createMask()
 drawMask(Mask, Matrix)
 darwFormat(format)
 
-print("\n") 
-
-print(printMatix(Matrix)) 
-
-print("\n") 
+cv2.imshow("image", printMatrix())
+cv2.waitKey(0)

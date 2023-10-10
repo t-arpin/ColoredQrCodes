@@ -21,9 +21,7 @@ for i in range(len(symbols)):
 print(output)
 
 for x, i in enumerate(output):
-    
+    print("")
 
 decoded_msg, decoded_msgecc, errata_pos = codec.decode(output)
 print(str(decoded_msg))
-
-

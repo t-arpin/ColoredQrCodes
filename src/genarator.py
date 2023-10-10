@@ -1,7 +1,8 @@
 import math
-import base64
 
-input = "TEST"
+input = "ABCEABF"
+
+error_Correction = ""
 
 def createZero(lenght, len):
     out = ""
@@ -12,6 +13,8 @@ def createZero(lenght, len):
         max = 7
     elif len == 8:
         max = 2*lenght
+    elif len == 21:
+        max = 8
     else:
         max = len
     for i in range(max - lenght):
@@ -72,28 +75,31 @@ def getSegment(input):
         x = 0
         for n, i in enumerate(input):
             temp.append(i)
-            print("temp : ", temp)
             x += 1
             while n == len(input) - 1 and x != 2:
                 data += createZero(len(bin(alphaNum(temp[0]))[2:]), 6) + bin(alphaNum(temp[0]))[2:]
-                print(alphaNum(temp[0]))
-                print(createZero(len(bin(alphaNum(temp[0]))[2:]), 6) + bin(alphaNum(temp[0]))[2:])
                 x = 0
                 break
             while x == 2:
                 data += createZero(len(bin(45*alphaNum(temp[0]) + alphaNum(temp[1]))[2:]), 11) + bin(45*alphaNum(temp[0]) + alphaNum(temp[1]))[2:]
-                print(45*alphaNum(temp[0]) + alphaNum(temp[1]))
-                print(createZero(len(bin(45*alphaNum(temp[0]) + alphaNum(temp[1]))[2:]), 11) + bin(45*alphaNum(temp[0]) + alphaNum(temp[1]))[2:])
                 temp[:] = []
                 x = 0  
         sequence = [mode, createZero(len(bin(len(input))[2:]), 9) + bin(len(input))[2:], data, terminator]
+    elif mode == "0100":
+        print("byte")
+        terminator = "0000"
+        data = ""
+        for i in input:
+            data += createZero(len(bin(ord(i))[2:]), 21) + bin(ord(i))[2:]
+        sequence = [mode, createZero(len(bin(len(input))[2:]), 21) + bin(len(input))[2:], data, terminator]
     else:
         return "no valid mode"
 
     sum = 0
     for i in sequence:
         sum += len(i)
-    sequence.append(createZero((round_to_multiple(sum, 8) - sum), 8))
+    
+    sequence.append(createZero(round_to_multiple(sum, 8) - sum, 8))
 
     sum = paddingSize - round_to_multiple(sum, 8)
     out = ""
@@ -109,7 +115,7 @@ def getSegment(input):
 
     #add error correction
 
-    sequence.append("10100011011111111000001110110011011011011101100000000111")
+    sequence.append(error_Correction)
 
     print(sequence)
 

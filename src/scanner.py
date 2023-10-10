@@ -3,6 +3,8 @@ import numpy as np
 from pyzbar.pyzbar import decode
 
 dectedqr = False
+qrtries = 0
+Matrix = [[0 for x in range(21)] for y in range(21)] 
 
 def decoder(image):
     gray_img = cv2.cvtColor(image,0)
@@ -22,7 +24,7 @@ cap = cv2.VideoCapture(0)
 while True:
     ret, frame = cap.read()
     dectedqr, point = decoder(frame)
-    if dectedqr == True:
+    if dectedqr == True and qrtries == 20:
         p1 = [point[0][0], point[0][1]]
         p3 = [point[1][0], point[1][1]]
         p4 = [point[2][0], point[2][1]]
@@ -38,8 +40,33 @@ while True:
 
         cv2.imwrite("QRCODE.png", img_output)
         break
+    if dectedqr == True:
+        qrtries += 1
     else:
         cv2.imshow("Image", frame)
         code = cv2.waitKey(10)
     if code == ord('q'):
         break
+
+for y in range(21):
+  for x in range(21):
+    temp = img_output[y*10:y*10+10, x*10:x*10+10]
+    average = temp.mean(axis=0).mean(axis=0)
+    if (average[0] + average[1] + average[2])/3 >= 200:
+      Matrix[y][x] = 0
+    else:
+      Matrix[y][x] = 1
+
+def printMatix(matrix):
+    out = ""
+    for i in range(21):
+        for x in matrix[i]:
+            if x == 1:
+                out += "██"
+            else:
+                out += "  "
+        out += "\n"
+    out += ""
+    return out
+
+print(printMatix(Matrix))

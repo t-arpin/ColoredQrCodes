@@ -4,7 +4,9 @@ from pyzbar.pyzbar import decode
 
 dectedqr = False
 qrtries = 0
-Matrix = [[0 for x in range(21)] for y in range(21)] 
+Matrix = [[0 for x in range(21)] for y in range(21)]
+windowsSize = [21, 21]
+scaling = 18
 
 def decoder(image):
     gray_img = cv2.cvtColor(image,0)
@@ -37,8 +39,7 @@ while True:
         converted_points = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
         matrix = cv2.getPerspectiveTransform(input_points, converted_points)
         img_output = cv2.warpPerspective(frame, matrix, (width, height))
-
-        cv2.imwrite("QRCODE.png", img_output)
+        cv2.destroyAllWindows()       
         break
     if dectedqr == True:
         qrtries += 1
@@ -57,16 +58,15 @@ for y in range(21):
     else:
       Matrix[y][x] = 1
 
-def printMatix(matrix):
-    out = ""
-    for i in range(21):
-        for x in matrix[i]:
-            if x == 1:
-                out += "██"
-            else:
-                out += "  "
-        out += "\n"
-    out += ""
-    return out
 
-print(printMatix(Matrix))
+img = np.zeros((windowsSize[0]*scaling, windowsSize[1]*scaling, 3), np.uint8)
+
+for y in range(21):
+  for x, i in enumerate(Matrix[y]):
+      if i == 1:
+          img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (0, 0, 0)
+      else:
+          img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (255, 255, 255)
+
+cv2.imshow("image", img)
+cv2.waitKey(0)

@@ -1,13 +1,22 @@
 import cv2
 import numpy as np
 
+# Color Codes
+
+# White = 0
+# Black = 1
+
+# Blue = 2
+# Red = 3
+# Green = 4
+
 windowsSize = [21, 21]
-scaling = 20
+scaling = 10
 
 w, h = 21, 21
 Matrix = [[0 for x in range(w)] for y in range(h)] 
 
-format = "001001110111110"
+format = "111001011110011"
 
 data = "0010000000111001110011010100010101000111001101001111000011101100000100011110110000010001111011000001000111101100000100011110110000010001111011000001000110011010010110111001010000010101100100001110100000101010"
 
@@ -18,10 +27,16 @@ def printMatrix():
 
     for y in range(21):
         for x, i in enumerate(Matrix[y]):
-            if i == 1:
-                img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (0, 0, 0)
-            else:
+            if i == 0:
                 img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (255, 255, 255)
+            elif i == 1:
+                img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (0, 0, 0)
+            elif i == 2:
+                img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (255, 0, 0)
+            elif i == 3:
+                img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (0, 255, 0)
+            elif i == 4:
+                img[y*scaling:y*scaling+scaling, x*scaling:x*scaling+scaling] = (0, 0, 255)
     return img
     
 
@@ -70,7 +85,7 @@ def drawTimeing():
     Matrix[6][19] = 0
     Matrix[6][20] = 1
 
-def drawFinder(x, y):
+def drawFinder(x, y, fill):
     i = 0 + x
     while i < 7 + x: 
         Matrix[i][0 + y] = 1
@@ -107,22 +122,22 @@ def drawFinder(x, y):
 
     i = 2 + x
     while i < 5 + x: 
-        Matrix[i][2 + y] = 1
+        Matrix[i][2 + y] = fill
         i += 1
     i = 2 + x
     while i < 5 + x: 
-        Matrix[i][4 + y] = 1
+        Matrix[i][4 + y] = fill
         i += 1
     i = 2 + y
     while i < 5 + y: 
-        Matrix[2 + x][i] = 1
+        Matrix[2 + x][i] = fill
         i += 1
     i = 2 + y
     while i < 5 + y: 
-        Matrix[4 + x][i] = 1
+        Matrix[4 + x][i] = fill
         i += 1
  
-    Matrix[3 + x][3 + y] = 1
+    Matrix[3 + x][3 + y] = fill
 
 def drawline(x, y, len, direction, fill):
     if direction == "hori":
@@ -201,15 +216,13 @@ def darwFormat(format):
     Matrix[13][8] = 1
 
 drawTimeing()
-drawFinder(0, 0)
-drawFinder(0, 14)
-drawFinder(14, 0)
+drawFinder(0, 0, 2)
+drawFinder(0, 14, 3)
+drawFinder(14, 0, 4)
 drawzigzag(data)
 createMask()
 drawMask(Mask, Matrix)
 darwFormat(format)
 
-cv2.imshow("image", printMatrix())
+cv2.imwrite("testimage.png", printMatrix())
 cv2.waitKey(0)
-
-

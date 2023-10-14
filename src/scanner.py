@@ -83,8 +83,8 @@ print("bluepoint : ", bluepoint)
 def between(x, point, dev):
   return x >= point - dev and x <= point + dev
 
-dev = 30
-cdev = 1
+dev = 40
+cdev = 10
 
 for y in range(21):
   for x in range(21):
@@ -105,6 +105,8 @@ for y in range(21):
     #green
     elif between(average[2], greenpoint, cdev) and between((average[1] + average[0])/2, blackpoint, dev):
         Matrix[y][x] = 4
+    else:
+        Matrix[y][x] = 0
   
 
 img = np.zeros((windowsSize[0]*scaling, windowsSize[1]*scaling, 3), np.uint8)
